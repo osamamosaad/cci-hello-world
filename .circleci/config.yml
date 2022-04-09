@@ -3,29 +3,31 @@ version: 2.1
 
 # Orchestrate or schedule a set of jobs
 jobs:
-  print_hello:
+  save_hello_world_output:
     docker:
-      - image: circleci/node:13.8.0
+      image: circleci/node:13.8.0
     steps:
-      - run: echo "Hello My pipeline id is << pipeline.id >> and my git branch is << pipeline.git.branch >>."
-  print_world:
+      - run:
+          name: "save hello world in file"
+          command: |
+            echo "Hello World!" > greeting.txt
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - greeting.txt
+  print_output_file:
     docker:
-      - image: circleci/node:13.8.0
+      image: circleci/node:13.8.0
     steps:
-      - run: echo "world!."
+      - attach_workspace:
+        at: /tmp/workspace
       - run:
-          name: "Print env var that is part of our project"
-          command: echo $GA_ID
-      - run:
-          name: "Print env GA_NAME var that is part of our project"
-          command: echo $GA_NAME
-      - run: echo $MY_ENV_VAR
+          name: "print output greeting file"
+          command: cat greeting.txt
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  saveGreetingFile:
     jobs:
-      - print_hello
-      - print_world:
+      - save_hello_world_output
+      - print_output_file:
           requires:
-            - print_hello
+            - save_hello_world_output
