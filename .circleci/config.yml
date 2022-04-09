@@ -16,7 +16,7 @@ jobs:
       - run:
           name: "Print env var that is part of our project"
           command: |
-            echo $GA_NAME
+            echo ${GA_NAME}
 workflows:
   # Name the workflow "welcome"
   welcome:
