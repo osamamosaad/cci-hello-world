@@ -7,12 +7,13 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
+      - run: mkdir /tmp/workspace
       - run:
           name: "save hello world in file"
           command: |
             echo "Hello World!" > greeting.txt
       - persist_to_workspace:
-          root: .
+          root: /tmp/workspace
           paths:
             - ./greeting.txt
   print_output_file:
@@ -20,10 +21,10 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - attach_workspace:
-          at: ./
+          at: /tmp/workspace
       - run:
           name: "print output greeting file"
-          command: cat greeting.txt
+          command: cat /tmp/workspace/greeting.txt
 workflows:
   saveGreetingFile:
     jobs:
