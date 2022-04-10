@@ -5,11 +5,18 @@ dockerImg: &dockerImg
     docker:
       - image: circleci/node:13.8.0
 
+commands:
+  print_pipeline_id:
+    description: "print pipeline id"
+    steps:
+      - run: echo $CIRCLE_WORKFLOW_ID
+
 # Orchestrate or schedule a set of jobs
 jobs:
   save_hello_world_output:
     <<: *dockerImg
     steps:
+      - print_pipeline_id
       - run: mkdir /tmp/workspace
       - run:
           name: "save hello world in file"
