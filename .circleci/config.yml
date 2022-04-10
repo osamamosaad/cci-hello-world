@@ -8,8 +8,11 @@ dockerImg: &dockerImg
 commands:
   print_pipeline_id:
     description: "print pipeline id"
+    parameters:
+      id:
+        type: string
     steps:
-      - run: echo $CIRCLE_WORKFLOW_ID
+      - run: echo <<parameters.id>>
 
 # Orchestrate or schedule a set of jobs
 jobs:
@@ -17,6 +20,7 @@ jobs:
     <<: *dockerImg
     steps:
       - print_pipeline_id
+          id: <<pipeline.id>>
       - run: mkdir /tmp/workspace
       - run:
           name: "save hello world in file"
@@ -38,6 +42,14 @@ jobs:
       - run:
           name: "print output greeting file"
           command: cat /tmp/workspace/greeting.txt
+  job_fail:
+    <<: *dockerImg
+    steps:
+      - run: return 1
+      - run:
+          name: "fail step"
+          command: echo "Hello Error!"
+          when: on_fail
 workflows:
   saveGreetingFile:
     jobs:
@@ -45,3 +57,4 @@ workflows:
       - print_output_file:
           requires:
             - save_hello_world_output
+      - job_fail
