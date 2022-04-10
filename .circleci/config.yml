@@ -11,11 +11,15 @@ jobs:
       - run:
           name: "save hello world in file"
           command: |
-            echo "Hello World!" > greeting.txt
+            echo "Hello World!" > /tmp/workspace/greeting.txt
+      - run:
+          name: "write GA Name"
+          command: |
+            echo $GA_NAME >> /tmp/workspace/greeting.txt
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
-            - ./greeting.txt
+            - greeting.txt
   print_output_file:
     docker:
       - image: circleci/node:13.8.0
