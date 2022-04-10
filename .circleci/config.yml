@@ -12,14 +12,14 @@ commands:
       id:
         type: string
     steps:
-      - run: echo <<parameters.id>>
+      - run: echo << parameters.id >>
 
 # Orchestrate or schedule a set of jobs
 jobs:
   save_hello_world_output:
     <<: *dockerImg
     steps:
-      - print_pipeline_id
+      - print_pipeline_id:
           id: <<pipeline.id>>
       - run: mkdir /tmp/workspace
       - run:
